@@ -103,21 +103,21 @@ impl PolyOps for IcicleBackend {
         folded
     }
 
-    // fn extend(poly: &CirclePoly<Self>, log_size: u32) -> CirclePoly<Self> {
-    //     assert!(log_size >= poly.log_size());
-    //     let count_zeros_to_extend = poly.coeffs.len();
-    //     let coeffs = DeviceVec::cuda_malloc_extend_with_zeros(&poly.coeffs.data, count_zeros_to_extend).unwrap();
-    //     CirclePoly::new(DeviceColumn {data: coeffs})
-    // }
-
     fn extend(poly: &CirclePoly<Self>, log_size: u32) -> CirclePoly<Self> {
         assert!(log_size >= poly.log_size());
-
-        let mut device_column = DeviceColumn::zeros(1 << log_size);
-        poly.coeffs.data.copy_to_device(&mut device_column.data).unwrap();
-
-        CirclePoly::new(device_column)
+        let count_zeros_to_extend = (1 << log_size) - poly.coeffs.len();
+        let coeffs = DeviceVec::cuda_malloc_extend_with_zeros(&poly.coeffs.data, count_zeros_to_extend).unwrap();
+        CirclePoly::new(DeviceColumn {data: coeffs})
     }
+
+    // fn extend(poly: &CirclePoly<Self>, log_size: u32) -> CirclePoly<Self> {
+    //     assert!(log_size >= poly.log_size());
+
+    //     let mut device_column = DeviceColumn::zeros(1 << log_size);
+    //     poly.coeffs.data.copy_to_device(&mut device_column.data[..poly.coeffs.data.len()]).unwrap();
+
+    //     CirclePoly::new(device_column)
+    // }
 
     fn evaluate(
         poly: &CirclePoly<Self>,
