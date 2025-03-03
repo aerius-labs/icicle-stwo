@@ -200,7 +200,7 @@ impl PolyOps for SimdBackend {
             let high_twiddle_factors =
                 (PackedSecureField::broadcast(twiddle_high) * twiddle_mids).to_array();
 
-            // Sum the coefficients multiplied by each corrseponsing twiddle. Result is effectivley
+            // Sum the coefficients multiplied by each corrseponsing twiddle. Result is effectively
             // an array[16] where the value at index 'i' is the sum of all coefficients at indices
             // that are i mod 16.
             for (&packed_coeffs, mid_twiddle) in zip(coeff_chunk, high_twiddle_factors) {
